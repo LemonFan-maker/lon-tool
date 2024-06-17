@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# lon-tool
-
-Linux on Nabu tool
-=======
 # Linux on Nabu Deployer
 #### Python tool for installing linux on xiaomi pad 5
 
@@ -28,4 +23,3 @@ Linux on Nabu tool
 | 252  | Unexpected error             |
 | 253  | User cancel                  |
 | 254  | Is it nabu?                  |
->>>>>>> a78d447 (Initial commit)
