@@ -28,8 +28,3 @@ require (
 	golang.org/x/term v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 )
-
-replace (
-	github.com/timoxa0/goadb => /Users/timoxa0/.mounty/DATA/Data/ANDROID/NABU/LINUX/deployer-go/goadb
-	github.com/timoxa0/gofastboot => /Users/timoxa0/.mounty/DATA/Data/ANDROID/NABU/LINUX/deployer-go/gofastboot
-)
