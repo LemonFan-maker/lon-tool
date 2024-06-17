@@ -1,5 +1,5 @@
-# Linux on Nabu Deployer
-#### Python tool for installing linux on xiaomi pad 5
+# Linux on Nabu Tool
+#### Go tool for installing linux on xiaomi pad 5
 
 #### Exit codes:
 | Code | Description                  |
