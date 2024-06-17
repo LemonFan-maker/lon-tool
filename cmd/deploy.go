@@ -4,6 +4,7 @@ import (
 	"io"
 	"io/fs"
 	"lon-tool/utils"
+	"lon-tool/image"
 	"net"
 	"os"
 	"regexp"
@@ -15,7 +16,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/timoxa0/goadb/adb"
 	"github.com/timoxa0/gofastboot/fastboot"
-	"github.com/timoxa0/lon_image/image"
 )
 
 var username string

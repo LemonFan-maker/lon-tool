@@ -8,7 +8,6 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/timoxa0/goadb v0.0.0-20240617073314-c303241c8c53
 	github.com/timoxa0/gofastboot v0.0.0-20240614162313-e0508069b252
-	github.com/timoxa0/lon_image v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -33,5 +32,4 @@ require (
 replace (
 	github.com/timoxa0/goadb => /Users/timoxa0/.mounty/DATA/Data/ANDROID/NABU/LINUX/deployer-go/goadb
 	github.com/timoxa0/gofastboot => /Users/timoxa0/.mounty/DATA/Data/ANDROID/NABU/LINUX/deployer-go/gofastboot
-	github.com/timoxa0/lon_image => /Users/timoxa0/.mounty/DATA/Data/ANDROID/NABU/LINUX/deployer-go/lon-image
 )

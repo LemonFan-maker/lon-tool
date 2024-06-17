@@ -3,11 +3,11 @@ package cmd
 import (
 	"io"
 	"os"
+	"lon-tool/image"
 
 	"github.com/codingsince1985/checksum"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
-	"github.com/timoxa0/lon_image/image"
 )
 
 var imageCmd = &cobra.Command{
