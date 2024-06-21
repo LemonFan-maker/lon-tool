@@ -7,7 +7,7 @@ require (
 	github.com/pterm/pterm v0.12.79
 	github.com/spf13/cobra v1.8.0
 	github.com/timoxa0/goadb v0.0.0-20240617073314-c303241c8c53
-	github.com/timoxa0/gofastboot v0.0.0-20240617184805-918afbb71e47
+	github.com/timoxa0/gofastboot v0.0.0-20240621122731-6a022539b068
 )
 
 require (
