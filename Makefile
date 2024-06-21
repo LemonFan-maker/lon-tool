@@ -1,15 +1,16 @@
 # Define variables
+NAME = lon-tool
 GOFLAGS ?=  -ldflags="-s -w"
 SRC ?= main.go
 BIN_DIR ?= ./bin
 
 # macOS settings
-MACOS_BIN = $(BIN_DIR)/lnd_mac_amd64
+MACOS_BIN = $(BIN_DIR)/$(NAME)_mac_amd64
 MACOS_CC = x86_64-apple-darwin23-gcc-14
 MACOS_CXX = x86_64-apple-darwin23-g++-14
 
 # Windows settings
-WINDOWS_BIN = $(BIN_DIR)/lnd_win_amd64.exe
+WINDOWS_BIN = $(BIN_DIR)/$(NAME)_win_amd64.exe
 WINDOWS_CC = x86_64-w64-mingw32-gcc
 WINDOWS_CXX = x86_64-w64-mingw32-g++
 WINDOWS_PKG_CONFIG_PATH = /usr/local/x86_64-w64-mingw32/lib/pkgconfig
@@ -17,7 +18,7 @@ WINDOWS_CGO_CFLAGS = -I/usr/local/x86_64-w64-mingw32/include
 WINDOWS_CGO_LDFLAGS = -L/usr/local/x86_64-w64-mingw32/lib
 
 # Linux settings
-LINUX_BIN = $(BIN_DIR)/lnd_lin_amd64
+LINUX_BIN = $(BIN_DIR)/$(NAME)_lin_amd64
 LINUX_CC = x86_64-linux-gnu-gcc
 LINUX_CXX = x86_64-linux-gnu-g++
 LINUX_PKG_CONFIG_PATH = /usr/local/x86_64-linux-gnu/lib/pkgconfig
