@@ -28,16 +28,20 @@ var uninstallCmd = &cobra.Command{
 		if serail == "autodetect" {
 			for _, dev := range fb_devs {
 				product, err := dev.GetVar("product")
+				devSerial, _ := dev.Device.SerialNumber()
 				if err != nil {
-					logger.Warn("Unable to communicate with device", logger.Args("Serial", dev.Serial))
+					logger.Warn("Unable to communicate with device", logger.Args("Serial", devSerial))
 					continue
 				}
-				logger.Debug("Found device", logger.Args("Product", product, "Sraial", dev.Serial))
+				logger.Debug("Found device", logger.Args("Product", product, "Sraial", devSerial))
 				if product == "nabu" {
-					logger.Debug("Nabu found", logger.Args("Serial", dev.Serial))
-					serail = dev.Serial
+					logger.Debug("Nabu found", logger.Args("Serial", devSerial))
+					serail = devSerial
 					break
 				}
+			}
+			for _, dev := range fb_devs {
+				dev.Close()
 			}
 			if serail == "autodetect" {
 				logger.Fatal("Nabu in fastboot mode not found")

@@ -3,8 +3,8 @@ package cmd
 import (
 	"io"
 	"io/fs"
-	"lon-tool/utils"
 	"lon-tool/image"
+	"lon-tool/utils"
 	"net"
 	"os"
 	"regexp"
@@ -30,6 +30,7 @@ var deployCmd = &cobra.Command{
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		var msg string
+
 		req_repartition := partsize != ""
 
 		image, close, err := image.ReadImage(args[0])
@@ -44,6 +45,7 @@ var deployCmd = &cobra.Command{
 			logger.Fatal("Failed to get adb client", logger.Args(err))
 		}
 		fb_devs, err := fastboot.FindDevices()
+		logger.Debug("Devices", logger.Args("Devices", fb_devs, "err", err))
 		if err != nil {
 			logger.Fatal("Failed to get fastboot device", logger.Args(err))
 		}
@@ -56,14 +58,16 @@ var deployCmd = &cobra.Command{
 		if serail == "autodetect" {
 			for _, dev := range fb_devs {
 				product, err := dev.GetVar("product")
+				devSerial, _ := dev.Device.SerialNumber()
 				if err != nil {
-					logger.Warn("Unable to communicate with device", logger.Args("Serial", dev.Serial))
+					logger.Warn("Unable to communicate with device", logger.Args("Serial", devSerial))
+					logger.Debug("Unable to communicate with device", logger.Args("err", err))
 					continue
 				}
-				logger.Debug("Found device", logger.Args("Product", product, "Sraial", dev.Serial))
+				logger.Debug("Found device", logger.Args("Product", product, "Sraial", devSerial, "object", dev))
 				if product == "nabu" {
-					logger.Debug("Nabu found", logger.Args("Serial", dev.Serial))
-					serail = dev.Serial
+					logger.Debug("Nabu found", logger.Args("Serial", devSerial))
+					serail = devSerial
 					if !req_repartition {
 						_, err1 := dev.GetVar("partition-type:linux")
 						_, err2 := dev.GetVar("partition-type:esp")
@@ -71,6 +75,9 @@ var deployCmd = &cobra.Command{
 					}
 					break
 				}
+			}
+			for _, dev := range fb_devs {
+				dev.Close()
 			}
 			if serail == "autodetect" {
 				logger.Fatal("Nabu in fastboot mode not found")
@@ -105,6 +112,10 @@ var deployCmd = &cobra.Command{
 			run_repartition, _ = pterm.DefaultInteractiveConfirm.WithDefaultValue(true).Show("Found incompatible partition table. Do you want to change it?")
 		} else {
 			run_repartition, _ = pterm.DefaultInteractiveConfirm.Show("Found compatible partition table. Do you want to change it?")
+		}
+		if req_repartition && !run_repartition {
+			pterm.Println("Bye")
+			os.Exit(0)
 		}
 
 		for {
@@ -155,7 +166,14 @@ var deployCmd = &cobra.Command{
 			pterm.Println("Bye")
 			os.Exit(253)
 		}
-		fb_dev, _ := fastboot.FindDevice(serail)
+		fb_dev, err := fastboot.FindDevice(serail)
+		if err != nil {
+			logger.Error("Unable to find device", logger.Args("object", fb_dev, "err", err))
+			fb_devs, err := fastboot.FindDevices()
+			logger.Debug("Devices", logger.Args("Devices", fb_devs, "err", err))
+			os.Exit(255)
+		}
+
 		adbd := adbc.Device(adb.DeviceWithSerial(serail))
 		bootdata, err := utils.Files.OrangeFox.Get(*pbar.WithTitle("Downloading orangefox"))
 		if err != nil {
@@ -166,7 +184,6 @@ var deployCmd = &cobra.Command{
 				os.Exit(179)
 			}
 		}
-		logger.Debug("Bootdata")
 
 		if run_repartition {
 			gpt, err := utils.Files.GPT.Get(*pbar.WithTitle("Downloading default partition table"))
