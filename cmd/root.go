@@ -49,14 +49,14 @@ var rootCmd = &cobra.Command{
 			WithShowElapsedTime(false).
 			WithRemoveWhenDone(false).
 			WithShowCount(false).
-			WithBarFiller(pbarFillStyle.Sprint("—")).
-			WithLastCharacter("—").
-			WithBarCharacter("—").
+			WithBarFiller(pbarFillStyle.Sprint("─")).
+			WithLastCharacter("─").
+			WithBarCharacter("─").
 			WithTitleStyle(pbarTitleStyle).
 			WithBarStyle(pbarStyle)
 		spinner = *pterm.DefaultSpinner.
 			WithRemoveWhenDone(true).
-			WithSequence("-", "\\", "|", "/").
+			WithSequence("─", "\\", "|", "/").
 			WithStyle(pbarTitleStyle).
 			WithDelay(time.Millisecond * 100)
 	},
