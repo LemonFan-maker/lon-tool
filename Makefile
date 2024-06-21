@@ -31,13 +31,13 @@ LINUX_CGO_LDFLAGS = -L/usr/local/x86_64-linux-gnu/lib
 all: macos windows linux
 
 macos:
-	echo "Building macos bin"
+	@echo "Building macos bin"
 	@export CGO_ENABLED=1 GOARCH=amd64 GOOS=darwin CC=$(MACOS_CC) CXX=$(MACOS_CXX) && \
 	go build $(GOFLAGS) -o $(MACOS_BIN) $(SRC) && \
 	echo "- saved to $(MACOS_BIN)"
 
 windows:
-	echo "Building windows bin"
+	@echo "Building windows bin"
 	@export CGO_ENABLED=1 GOARCH=amd64 GOOS=windows CC=$(WINDOWS_CC) CXX=$(WINDOWS_CXX) \
 	PKG_CONFIG_PATH=$(WINDOWS_PKG_CONFIG_PATH) CGO_CFLAGS=$(WINDOWS_CGO_CFLAGS) \
 	CGO_LDFLAGS=$(WINDOWS_CGO_LDFLAGS) && \
@@ -45,7 +45,7 @@ windows:
 	echo "- saved to $(WINDOWS_BIN)"
 
 linux:
-	echo "Building linux bin"
+	@echo "Building linux bin"
 	@export CGO_ENABLED=1 GOARCH=amd64 GOOS=linux CC=$(LINUX_CC) CXX=$(LINUX_CXX) \
 	PKG_CONFIG_PATH=$(LINUX_PKG_CONFIG_PATH) CGO_CFLAGS=$(LINUX_CGO_CFLAGS) \
 	CGO_LDFLAGS=$(LINUX_CGO_LDFLAGS) && \
