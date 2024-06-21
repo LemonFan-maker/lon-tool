@@ -24,6 +24,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var version string
 var logger pterm.Logger
 var pbar pterm.ProgressbarPrinter
 var spinner pterm.SpinnerPrinter
@@ -31,9 +32,10 @@ var spinner pterm.SpinnerPrinter
 var verbose bool
 
 var rootCmd = &cobra.Command{
-	Use:   "lon-tool",
-	Short: "A tool for installing linux on nabu and managing linux images",
-	Long:  "A tool for installing linux on nabu and managing linux images",
+	Use:     "lon-tool",
+	Short:   "A tool for installing linux on nabu and managing linux images",
+	Long:    "A tool for installing linux on nabu and managing linux images",
+	Version: version,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if verbose {
 			logger = *pterm.DefaultLogger.WithLevel(pterm.LogLevelDebug).WithTime(false)

@@ -1,8 +1,10 @@
 # Define variables
 NAME = lon-tool
-GOFLAGS ?=  -ldflags="-s -w"
 SRC ?= main.go
 BIN_DIR ?= ./bin
+GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
+GOFLAGS ?=  -ldflags="-s -w -X lon-tool/cmd.version=$(GIT_VERSION)"
+WINDOWS_GOFLAGS ?=  -ldflags="-extldflags=-static -s -w -X lon-tool/cmd.version=$(GIT_VERSION)"
 
 # macOS settings
 MACOS_BIN = $(BIN_DIR)/$(NAME)_mac_amd64
@@ -29,24 +31,24 @@ LINUX_CGO_LDFLAGS = -L/usr/local/x86_64-linux-gnu/lib
 all: macos windows linux
 
 macos:
+	echo "Building macos bin"
 	@export CGO_ENABLED=1 GOARCH=amd64 GOOS=darwin CC=$(MACOS_CC) CXX=$(MACOS_CXX) && \
-	echo "Building macos bin" && \
 	go build $(GOFLAGS) -o $(MACOS_BIN) $(SRC) && \
 	echo "- saved to $(MACOS_BIN)"
 
 windows:
+	echo "Building windows bin"
 	@export CGO_ENABLED=1 GOARCH=amd64 GOOS=windows CC=$(WINDOWS_CC) CXX=$(WINDOWS_CXX) \
 	PKG_CONFIG_PATH=$(WINDOWS_PKG_CONFIG_PATH) CGO_CFLAGS=$(WINDOWS_CGO_CFLAGS) \
 	CGO_LDFLAGS=$(WINDOWS_CGO_LDFLAGS) && \
-	echo "Building windows bin" && \
-	go build $(GOFLAGS) -o $(WINDOWS_BIN) -ldflags="-extldflags=-static" $(SRC) && \
+	go build $(WINDOWS_GOFLAGS) -o $(WINDOWS_BIN) $(SRC) && \
 	echo "- saved to $(WINDOWS_BIN)"
 
 linux:
+	echo "Building linux bin"
 	@export CGO_ENABLED=1 GOARCH=amd64 GOOS=linux CC=$(LINUX_CC) CXX=$(LINUX_CXX) \
 	PKG_CONFIG_PATH=$(LINUX_PKG_CONFIG_PATH) CGO_CFLAGS=$(LINUX_CGO_CFLAGS) \
 	CGO_LDFLAGS=$(LINUX_CGO_LDFLAGS) && \
-	echo "Building linux bin" && \
 	go build $(GOFLAGS) -o $(LINUX_BIN) $(SRC) && \
 	echo "- saved to $(LINUX_BIN)"
 
