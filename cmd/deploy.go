@@ -353,7 +353,6 @@ var deployCmd = &cobra.Command{
 		}
 
 		adbd.RunCommand("mkdir /tmp/uefi-install")
-		uploadBar, _ := pbar.WithTotal(2).WithTitle("Uploading uefi files").Start()
 
 		bootshim, err := utils.Files.UEFIBootshim.Get(*pbar.WithTitle("Downloading uefi bootshim"))
 		if err != nil {
@@ -367,16 +366,13 @@ var deployCmd = &cobra.Command{
 
 		conn, err := adbd.OpenWrite(pterm.Sprintf("/tmp/uefi-install/%s", utils.Files.UEFIBootshim.Name), fs.FileMode(0777), adb.MtimeOfClose)
 		if err != nil {
-			uploadBar.Stop()
 			logger.Error("Failed to send uefi bootshim", logger.Args("Error", err))
 		}
 		_, err = conn.Write(bootshim)
 		if err != nil {
-			uploadBar.Stop()
 			logger.Error("Failed to send uefi bootshim", logger.Args("Error", err))
 		}
 		conn.Close()
-		uploadBar.Add(1)
 
 		payload, err := utils.Files.UEFIPayload.Get(*pbar.WithTitle("Downloading uefi payload"))
 		if err != nil {
@@ -389,16 +385,13 @@ var deployCmd = &cobra.Command{
 		}
 		conn, err = adbd.OpenWrite(pterm.Sprintf("/tmp/uefi-install/%s", utils.Files.UEFIPayload.Name), fs.FileMode(0777), adb.MtimeOfClose)
 		if err != nil {
-			uploadBar.Stop()
 			logger.Error("Failed to send uefi payload", logger.Args("Error", err))
 		}
 		_, err = conn.Write(payload)
 		if err != nil {
-			uploadBar.Stop()
 			logger.Error("Failed to send uefi payload", logger.Args("Error", err))
 		}
 		conn.Close()
-		uploadBar.Add(1)
 
 		uefiSpinner, _ := spinner.Start("Patching UEFI")
 		out, err = adbd.RunCommand("uefi-patch  > /dev/null 2>&1; echo $?")
