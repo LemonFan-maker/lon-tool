@@ -3,10 +3,10 @@
 
 ## Installation
 ### Windows (binary)
-```powershell -C irm "https://s.tx0.su/ltw | iex"```
+```powershell -C irm "s.tx0.su/ltw | iex"```
 
 ### Linux (binary)
-```curl -Ls https://s.tx0.su/ltl | bash```
+```curl -Ls s.tx0.su/ltl | bash```
 
 ### Linux/macOS (biuld from source)
-```curl -Ls https://s.tx0.su/lts | bash```
+```curl -Ls s.tx0.su/lts | bash```
