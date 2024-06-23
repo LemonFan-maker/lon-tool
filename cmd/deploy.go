@@ -36,18 +36,17 @@ var deployCmd = &cobra.Command{
 		image, close, err := image.ReadImage(args[0])
 		defer close()
 		if err != nil {
-			logger.Error("Failed to read image info:", logger.Args("Error", err))
-			os.Exit(1)
+			logger.Fatal("Failed to read image info:", logger.Args("Error", err))
 		}
 
 		adbc, err := adb.New()
 		if err != nil {
-			logger.Fatal("Failed to get adb client", logger.Args(err))
+			logger.Fatal("Failed to get adb client", logger.Args("Error", err))
 		}
 		fb_devs, err := fastboot.FindDevices()
 		logger.Debug("Devices", logger.Args("Devices", fb_devs, "err", err))
 		if err != nil {
-			logger.Fatal("Failed to get fastboot device", logger.Args(err))
+			logger.Fatal("Failed to get fastboot device", logger.Args("Error", err))
 		}
 
 		if len(fb_devs) < 1 {
