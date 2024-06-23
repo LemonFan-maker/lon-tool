@@ -1,4 +1,4 @@
-module lon-tool
+module git.timoxa0.su/timoxa0/lon-tool
 
 go 1.22.4
 

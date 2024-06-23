@@ -3,7 +3,7 @@ package cmd
 import (
 	"io"
 	"os"
-	"lon-tool/image"
+	"git.timoxa0.su/timoxa0/lon-tool/image"
 
 	"github.com/codingsince1985/checksum"
 	"github.com/pterm/pterm"

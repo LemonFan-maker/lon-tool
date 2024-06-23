@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"lon-tool/utils"
+	"git.timoxa0.su/timoxa0/lon-tool/utils"
 	"os"
 
 	"github.com/pterm/pterm"

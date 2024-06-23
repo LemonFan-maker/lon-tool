@@ -16,7 +16,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 package main
 
-import "lon-tool/cmd"
+import "git.timoxa0.su/timoxa0/lon-tool/cmd"
 
 func main() {
 	cmd.Execute()

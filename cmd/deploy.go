@@ -3,8 +3,8 @@ package cmd
 import (
 	"io"
 	"io/fs"
-	"lon-tool/image"
-	"lon-tool/utils"
+	"git.timoxa0.su/timoxa0/lon-tool/image"
+	"git.timoxa0.su/timoxa0/lon-tool/utils"
 	"net"
 	"os"
 	"regexp"
