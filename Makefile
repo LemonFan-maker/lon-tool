@@ -3,8 +3,8 @@ NAME = lon-tool
 SRC ?= main.go
 BIN_DIR ?= ./bin
 GIT_VERSION := $(shell git describe --abbrev=4 --dirty --always --tags)
-GOFLAGS ?=  -ldflags="-s -w -X lon-tool/cmd.version=$(GIT_VERSION)"
-WINDOWS_GOFLAGS ?=  -ldflags="-extldflags=-static -s -w -X lon-tool/cmd.version=$(GIT_VERSION)"
+GOFLAGS ?=  -ldflags="-s -w -X git.timoxa0.su/timoxa0/lon-tool/cmd.version=$(GIT_VERSION)"
+WINDOWS_GOFLAGS ?=  -ldflags="-extldflags=-static -s -w -X git.timoxa0.su/timoxa0/lon-tool/cmd.version=$(GIT_VERSION)"
 
 # Windows settings
 WINDOWS_BIN = $(BIN_DIR)/$(NAME)_win_amd64.exe
