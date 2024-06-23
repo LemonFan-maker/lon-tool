@@ -3,7 +3,7 @@
 
 ## Installation
 ### Windows (binary)
-```powershell -C irm https://s.tx0.su/ltw | iex```
+```powershell -C irm "https://s.tx0.su/ltw | iex"```
 
 ### Linux (binary)
 ```curl -Ls https://s.tx0.su/ltl | bash```
