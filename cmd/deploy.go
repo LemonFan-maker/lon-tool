@@ -3,14 +3,15 @@ package cmd
 import (
 	"io"
 	"io/fs"
-	"git.timoxa0.su/timoxa0/lon-tool/image"
-	"git.timoxa0.su/timoxa0/lon-tool/utils"
 	"net"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"git.timoxa0.su/timoxa0/lon-tool/image"
+	"git.timoxa0.su/timoxa0/lon-tool/utils"
 
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
@@ -342,9 +343,10 @@ var deployCmd = &cobra.Command{
 		<-doneChan2
 		adbd.KillForwardAll()
 
-		out, err := adbd.RunCommand(pterm.Sprintf("postinstall %s %s > /dev/null 2>&1; echo $?", username, password))
+		pi_cmd := pterm.Sprintf("postinstall \"%s\" \"%s\" > /dev/null 2>&1; echo $?", username, strings.ReplaceAll(password, "\"", "\\\""))
+		out, err := adbd.RunCommand(pi_cmd)
 		out = strings.TrimRight(out, "\n")
-		logger.Debug("Postinstall", logger.Args("out", out, "err", err))
+		logger.Debug("Postinstall", logger.Args("cmd", pi_cmd, "out", out, "err", err))
 		if out != "0" || err != nil {
 			logger.Error("Postinstall failed. Reflash stock rom and try again", logger.Args("Device error", out, "Go error", err))
 		} else {
