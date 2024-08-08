@@ -23,7 +23,9 @@ var username string
 var password string
 var serail string
 var partsize string
+var nosimpleinit bool
 var partpercent int
+
 var deployCmd = &cobra.Command{
 	Use:   "deploy <rootfs.lni>",
 	Short: "Deploy system to device",
@@ -353,70 +355,74 @@ var deployCmd = &cobra.Command{
 			logger.Info("System cofigured")
 		}
 
-		adbd.RunCommand("mkdir /tmp/uefi-install")
+		var uefi_out string
 
-		bootshim, err := utils.Files.UEFIBootshim.Get(*pbar.WithTitle("Downloading uefi bootshim"))
-		if err != nil {
-			if bootshim != nil {
-				logger.Warn("Unable to verify uefi bootship image")
-			} else {
-				logger.Error("Unable to download uefi bootshim image")
-				os.Exit(179)
+		if nosimpleinit {
+			logger.Info("-Q flag present. Skipping simpleinit install")
+			uefi_out = "0"
+		} else {
+			adbd.RunCommand("mkdir /tmp/uefi-install")
+
+			bootshim, err := utils.Files.UEFIBootshim.Get(*pbar.WithTitle("Downloading uefi bootshim"))
+			if err != nil {
+				if bootshim != nil {
+					logger.Warn("Unable to verify uefi bootship image")
+				} else {
+					logger.Error("Unable to download uefi bootshim image")
+					os.Exit(179)
+				}
 			}
-		}
 
-		conn, err := adbd.OpenWrite(pterm.Sprintf("/tmp/uefi-install/%s", utils.Files.UEFIBootshim.Name), fs.FileMode(0777), adb.MtimeOfClose)
-		if err != nil {
-			logger.Error("Failed to send uefi bootshim", logger.Args("Error", err))
-		}
-		_, err = conn.Write(bootshim)
-		if err != nil {
-			logger.Error("Failed to send uefi bootshim", logger.Args("Error", err))
-		}
-		conn.Close()
-
-		payload, err := utils.Files.UEFIPayload.Get(*pbar.WithTitle("Downloading uefi payload"))
-		if err != nil {
-			if payload != nil {
-				logger.Warn("Unable to verify uefi payload image")
-			} else {
-				logger.Error("Unable to download uefi payload image")
-				os.Exit(179)
+			conn, err := adbd.OpenWrite(pterm.Sprintf("/tmp/uefi-install/%s", utils.Files.UEFIBootshim.Name), fs.FileMode(0777), adb.MtimeOfClose)
+			if err != nil {
+				logger.Error("Failed to send uefi bootshim", logger.Args("Error", err))
 			}
-		}
-		conn, err = adbd.OpenWrite(pterm.Sprintf("/tmp/uefi-install/%s", utils.Files.UEFIPayload.Name), fs.FileMode(0777), adb.MtimeOfClose)
-		if err != nil {
-			logger.Error("Failed to send uefi payload", logger.Args("Error", err))
-		}
-		_, err = conn.Write(payload)
-		if err != nil {
-			logger.Error("Failed to send uefi payload", logger.Args("Error", err))
-		}
-		conn.Close()
+			_, err = conn.Write(bootshim)
+			if err != nil {
+				logger.Error("Failed to send uefi bootshim", logger.Args("Error", err))
+			}
+			conn.Close()
 
-		uefiSpinner, _ := spinner.Start("Patching UEFI")
-		out, err = adbd.RunCommand("uefi-patch  > /dev/null 2>&1; echo $?")
-		out = strings.TrimRight(out, "\n")
-		if err != nil {
-			logger.Error("Failed to install uefi. Reflash stock rom and try again", logger.Args("Error", err))
-			os.Exit(176)
-		}
-		logger.Debug("Uefi patch", logger.Args("Out", out))
+			payload, err := utils.Files.UEFIPayload.Get(*pbar.WithTitle("Downloading uefi payload"))
+			if err != nil {
+				if payload != nil {
+					logger.Warn("Unable to verify uefi payload image")
+				} else {
+					logger.Error("Unable to download uefi payload image")
+					os.Exit(179)
+				}
+			}
+			conn, err = adbd.OpenWrite(pterm.Sprintf("/tmp/uefi-install/%s", utils.Files.UEFIPayload.Name), fs.FileMode(0777), adb.MtimeOfClose)
+			if err != nil {
+				logger.Error("Failed to send uefi payload", logger.Args("Error", err))
+			}
+			_, err = conn.Write(payload)
+			if err != nil {
+				logger.Error("Failed to send uefi payload", logger.Args("Error", err))
+			}
+			conn.Close()
 
-		switch out {
-		case "1":
+			uefiSpinner, _ := spinner.Start("Patching UEFI")
+			uefi_out, err = adbd.RunCommand("uefi-patch  > /dev/null 2>&1; echo $?")
+			if err != nil {
+				logger.Error("Failed to install uefi. Reflash stock rom and try again", logger.Args("Error", err))
+				os.Exit(176)
+			}
+			uefi_out = strings.TrimRight(uefi_out, "\n")
+			logger.Debug("Uefi patch", logger.Args("Out", out))
 			uefiSpinner.Stop()
+		}
+
+		switch uefi_out {
+		case "1":
 			logger.Error("Failed to install uefi. Reflash stock rom and try again", logger.Args("Error", err))
 			adbd.RunCommand("reboot bootloader")
 			os.Exit(176)
 		case "2":
-
 			adbd.RunCommand("reboot")
-			uefiSpinner.Stop()
 			logger.Info("Bootimage already patched")
 		case "0":
 			adbd.RunCommand("reboot")
-			uefiSpinner.Stop()
 			logger.Info("Installation done!")
 		}
 	},
@@ -428,4 +434,5 @@ func init() {
 	deployCmd.Flags().StringVarP(&password, "password", "p", "", "User password")
 	deployCmd.Flags().StringVarP(&serail, "serial", "s", "autodetect", "Device serial")
 	deployCmd.Flags().StringVarP(&partsize, "part-size", "S", "", "Linux partition size in percents")
+	deployCmd.Flags().BoolVarP(&nosimpleinit, "no-simple-init", "Q", false, "Disable simple init install")
 }
