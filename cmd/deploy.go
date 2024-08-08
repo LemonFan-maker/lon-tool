@@ -291,10 +291,10 @@ var deployCmd = &cobra.Command{
 			logger.Error("Failled to find free tcp port")
 			os.Exit(181)
 		}
-		logger.Debug("Flasher", logger.Args("port", port))
-
+		logger.Debug("Flasher started", logger.Args("port", port))
+		forwards, _ := adbd.ListForwards()
 		adbd.Forward(pterm.Sprintf("tcp:%v", port), "tcp:4444")
-		logger.Debug("ListForwards", logger.Args(adbd.ListForwards()))
+		logger.Debug("Forward started", logger.Args("forwards", forwards))
 		doneChan1 := make(chan bool)
 		doneChan2 := make(chan bool)
 		go func() {
@@ -307,7 +307,7 @@ var deployCmd = &cobra.Command{
 		go func() {
 			conn, err := net.Dial("tcp", pterm.Sprintf("127.0.0.1:%v", port))
 			if err != nil {
-				logger.Error("Failled to connect to device")
+				logger.Fatal("Failled to connect to device")
 			}
 			buf := make([]byte, 409600)
 			bar, _ := pbar.WithTotal(int(image.ImgSize)).WithTitle("Flashing rootfs").WithRemoveWhenDone(false).Start()
