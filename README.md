@@ -8,5 +8,5 @@
 ### Linux (binary)
 ```curl -Ls s.tx0.su/ltl | bash```
 
-### Linux/macOS (biuld from source)
+### Linux/macOS (build from source)
 ```curl -Ls s.tx0.su/lts | bash```
