@@ -242,14 +242,7 @@ var deployCmd = &cobra.Command{
 
 			block_size, _ := adbd.RunCommand("blockdev --getsize64 /dev/block/sda")
 			block_size = strings.TrimRight(block_size, "\n")
-			is128 := false
-			if r, _ := regexp.MatchString(`^125[0-9]{9}$`, block_size); r {
-				is128 = true
-			} else if r, _ := regexp.MatchString(`^253[0-9]{9}$`, block_size); r {
-				is128 = false
-			}
-
-			for _, cmd := range utils.GenRepartCommands(partpercent, is128) {
+			for _, cmd := range utils.GenRepartCommands(partpercent, block_size) {
 				adbd.RunCommand(cmd)
 				logger.Debug("Executed command", logger.Args("cmd", cmd))
 			}

@@ -4,14 +4,17 @@ import (
 	"fmt"
 	"math"
 	"net"
+	"regexp"
 )
 
-func GenRepartCommands(percent int, is128 bool) []string {
-	var maxsize uint8
-	if is128 {
+func GenRepartCommands(percent int, blocksize string) []string {
+	var maxsize uint16
+	if r, _ := regexp.MatchString(`^125[0-9]{9}$`, blocksize); r {
 		maxsize = 126
-	} else {
+	} else if r, _ := regexp.MatchString(`^253[0-9]{9}$`, blocksize); r {
 		maxsize = 254
+	} else if r, _ := regexp.MatchString(`^509[0-9]{9}$`, blocksize); r {
+		maxsize = 509
 	}
 	linux_max := maxsize - 12
 	size := math.Round(float64(linux_max)*float64(percent)) / 100
@@ -25,7 +28,6 @@ func GenRepartCommands(percent int, is128 bool) []string {
 		fmt.Sprintf("parted -s /dev/block/sda mkpart esp fat32 %vGB %vGB", linux_end, maxsize),
 	}
 }
-
 
 func GetFreePort() (int, error) {
 	listener, err := net.Listen("tcp", ":0")
