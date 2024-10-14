@@ -23,9 +23,10 @@ func GenRepartCommands(percent int, blocksize string) []string {
 	return []string{
 		"sgdisk --resize-table 64 /dev/block/sda",
 		"parted -s /dev/block/sda rm 31",
-		fmt.Sprintf("parted -s /dev/block/sda mkpart userdata ext4 10.9GB %vGB", userdata_end),
-		fmt.Sprintf("parted -s /dev/block/sda mkpart linux ext4 %vGB %vGB", userdata_end, linux_end),
-		fmt.Sprintf("parted -s /dev/block/sda mkpart esp fat32 %vGB %vGB", linux_end, maxsize),
+		fmt.Sprintf("parted -s /dev/block/sda mkpart userdata ext4 10.9GB 89.5GB"),
+		fmt.Sprintf("parted -s /dev/block/sda mkpart esp vfat 89.5GB 90GB"),
+		fmt.Sprintf("parted -s /dev/block/sda mkpart Arch ext4 90GB 160GB"),
+		fmt.Sprintf("parted -s /dev/block/sda mkpart Windows fat32 160GB %vGB", maxsize),
 	}
 }
 
