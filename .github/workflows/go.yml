@@ -18,14 +18,21 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64
+
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.23.2'
+        
     - name: Install
       run: go get git.timoxa0.su/timoxa0/lon-tool/cmd
       
     - name: Build
+    
       run: make all
 
     - name: Pack
