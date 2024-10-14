@@ -29,10 +29,11 @@ jobs:
         go-version: '1.23.2'
         
     - name: Install
-      run: go get git.timoxa0.su/timoxa0/lon-tool/cmd
-      
+      run: |
+        go get git.timoxa0.su/timoxa0/lon-tool/cmd
+        sudo apt install libusb-1.0-0-dev libusb-dev libudev-dev
+
     - name: Build
-    
       run: make all
 
     - name: Pack
