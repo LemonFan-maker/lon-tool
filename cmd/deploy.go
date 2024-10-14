@@ -71,7 +71,7 @@ var deployCmd = &cobra.Command{
 					logger.Debug("Nabu found", logger.Args("Serial", devSerial))
 					serail = devSerial
 					if !req_repartition {
-						_, err1 := dev.GetVar("partition-type:linux")
+						_, err1 := dev.GetVar("partition-type:Arch")
 						_, err2 := dev.GetVar("partition-type:esp")
 						req_repartition = err1 != nil && err2 != nil
 					}
@@ -298,7 +298,7 @@ var deployCmd = &cobra.Command{
 		doneChan1 := make(chan bool)
 		doneChan2 := make(chan bool)
 		go func() {
-			adbd.RunCommand("busybox nc -w 10 -l 127.0.0.1:4444 > /dev/block/platform/soc/1d84000.ufshc/by-name/linux 2> /tmp/nclog.txt")
+			adbd.RunCommand("busybox nc -w 10 -l 127.0.0.1:4444 > /dev/block/platform/soc/1d84000.ufshc/by-name/Arch 2> /tmp/nclog.txt")
 			logger.Debug("Busybox closed")
 			doneChan1 <- true
 		}()
