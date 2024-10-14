@@ -2,7 +2,6 @@ package utils
 
 import (
 	"fmt"
-	"math"
 	"net"
 	"regexp"
 )
@@ -16,10 +15,6 @@ func GenRepartCommands(percent int, blocksize string) []string {
 	} else if r, _ := regexp.MatchString(`^509[0-9]{9}$`, blocksize); r {
 		maxsize = 509
 	}
-	linux_max := maxsize - 12
-	size := math.Round(float64(linux_max)*float64(percent)) / 100
-	userdata_end := float64(maxsize) - 1 - size
-	linux_end := userdata_end + size
 	return []string{
 		"sgdisk --resize-table 64 /dev/block/sda",
 		"parted -s /dev/block/sda rm 31",
